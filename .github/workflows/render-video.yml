@@ -16,15 +16,18 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-        cache: 'npm'
     
     - name: Install dependencies
       working-directory: ./skill-vetter/04-composition/remotion
-      run: npm ci
+      run: |
+        echo "Installing dependencies..."
+        npm install
     
     - name: Render video
       working-directory: ./skill-vetter/04-composition/remotion
-      run: npm run render
+      run: |
+        echo "Rendering video..."
+        npm run render
     
     - name: Upload video artifact
       uses: actions/upload-artifact@v3
