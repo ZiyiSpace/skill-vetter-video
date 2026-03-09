@@ -2,7 +2,7 @@ name: Render Skill Video
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
