@@ -1,0 +1,34 @@
+name: Render Skill Video
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      working-directory: ./skill-vetter/04-composition/remotion
+      run: npm ci
+    
+    - name: Render video
+      working-directory: ./skill-vetter/04-composition/remotion
+      run: npm run render
+    
+    - name: Upload video artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: skill-vetter-video
+        path: skill-vetter/04-composition/output/skill-vetter-final.mp4
+        retention-days: 7
