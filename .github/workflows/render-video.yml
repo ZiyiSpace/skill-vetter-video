@@ -7,30 +7,46 @@ on:
 
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: write
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
     
-    - name: Install dependencies
+    - name: Debug - List files
+      run: |
+        echo "Root files:"
+        ls -la
+        echo ""
+        echo "skill-vetter directory:"
+        ls -la skill-vetter/ || echo "Directory not found"
+    
+    - name: Install Remotion dependencies
       working-directory: ./skill-vetter/04-composition/remotion
       run: |
         echo "Installing dependencies..."
-        npm install
+        npm install --legacy-peer-deps
     
-    - name: Render video
+    - name: Create output directory
+      working-directory: ./skill-vetter/04-composition
+      run: mkdir -p output
+    
+    - name: Render video with Remotion
       working-directory: ./skill-vetter/04-composition/remotion
       run: |
         echo "Rendering video..."
-        npm run render
+        npx remotion render SkillVetter ../output/skill-vetter-final.mp4 --codec=h264 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=192k
     
     - name: Upload video artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: skill-vetter-video
         path: skill-vetter/04-composition/output/skill-vetter-final.mp4
